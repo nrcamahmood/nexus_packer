@@ -1,0 +1,38 @@
+{
+  "variables": {
+      "aws_profile": "{{env `AWS_PROFILE`}}"
+    },
+    "builders": [
+        {
+            "ami_name": "NexusRepo-{{timestamp}}",
+            "ami_description": "Nexus 3 artifact repository",
+            "instance_type": "t2.micro",
+            "region": "us-east-1",
+            "vpc_id" : "vpc-d37d12b7",
+            "subnet_id": "subnet-6575a84f",
+            "profile": "{{ user `aws_profile`}}",
+            "source_ami" : "ami-8c1be5f6",
+            "ssh_username": "ubuntu",
+            "type": "amazon-ebs"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "inline":[
+                "ls -al /home/ubuntu",
+                "which java",
+                "cat /home/ubuntu/welcome.txt"
+            ]
+        },
+        {
+            "type": "shell",
+            "script": "./example.sh"
+        },
+        {
+            "type": "file",
+            "source": "./nexus.vmoptions",
+            "destination": "/app/nexus/bin/nexus.vmoptions"
+        }
+    ]
+}
